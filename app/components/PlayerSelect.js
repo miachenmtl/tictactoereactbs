@@ -1,4 +1,5 @@
 var React = require('react');
+var PropTypes = React.PropTypes;
 var FormGroup = require('react-bootstrap/lib/FormGroup');
 var FormControl = require('react-bootstrap/lib/FormControl');
 var ControlLabel = require('react-bootstrap/lib/ControlLabel');
@@ -23,6 +24,13 @@ function PlayerSelect(props) {
       </FormControl>
     </FormGroup>
   )
+}
+
+PlayerSelect.propTypes = {
+  player: PropTypes.string.isRequired,
+  game: PropTypes.number.isRequired,
+  aiStatus: PropTypes.array.isRequired,
+  onChangePlayer: PropTypes.func.isRequired
 }
 
 module.exports = PlayerSelect;

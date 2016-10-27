@@ -1,3 +1,5 @@
+var checkConditionLogic = require('./checkConditionLogic');
+
 var helperLogic = {
   /** Returns an array of coordinates of remaining blank squares
     * @param {object} grid The state of the grid
@@ -63,6 +65,65 @@ var helperLogic = {
         }
       }
     }
+  },
+  getWinningSquaresFromPosition: function(positionIndex) {
+    var i;
+    var rowName;
+    var colNum;
+    var resultArray = [];
+    if (positionIndex < 3) {
+      rowName = "row" + (positionIndex + 1).toString();
+      for (i = 0; i < 3; i++) {
+        resultArray.push([rowName, i]);
+      }
+    } else if (positionIndex < 6) {
+      colNum = positionIndex % 3;
+      for (i = 1; i < 4; i++) {
+        rowName = "row" + i.toString();
+        resultArray.push([rowName, colNum]);
+      }
+    } else if (positionIndex < 7) {
+      for (i = 0; i < 3; i++) {
+        rowName = "row" + (i + 1).toString();
+        resultArray.push([rowName, i])
+      }
+    } else {
+      for (i = 0; i < 3; i++) {
+        rowName = "row" + (i + 1).toString();
+        resultArray.push([rowName, 2 - i]);
+      }
+    }
+    return resultArray;
+  },
+  eliminateLosingMoves: function(grid, player) {
+    var i;
+    var aiGrid;
+    var forcedWin;
+    var canGetForcedWin;
+    var result = [];
+    var opp = 2 - ((player + 1) % 2);
+    var legalMoves = this.getLegalMoves(grid);
+    var numLegalMoves = legalMoves.length;
+    var candidateMoveIndexArray = [];
+    for (i = 0; i < numLegalMoves; i++) {
+      aiGrid = JSON.parse(JSON.stringify(grid));
+      aiGrid[legalMoves[i][0]][legalMoves[i][1]] = player;
+      forcedWin = checkConditionLogic.checkForcedWin(aiGrid, opp);
+      canGetForcedWin = checkConditionLogic.checkCanGetForcedWin(aiGrid, opp);
+      if (forcedWin[0]) {
+        candidateMoveIndexArray[i] = false;
+      } else if (canGetForcedWin[0]) {
+        candidateMoveIndexArray[i] = false;
+      } else {
+        candidateMoveIndexArray[i] = true;
+      }
+    }
+    for (i = 0; i < numLegalMoves; i++) {
+      if (candidateMoveIndexArray[i]) {
+        result.push(legalMoves[i]);
+      }
+    }
+    return result;
   },
   /** Returns a 3 * 3 array of arrays: for each row,
     * it lists number of blank squares, number of O

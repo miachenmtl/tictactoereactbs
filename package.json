@@ -6,7 +6,7 @@
   "scripts": {
     "production": "webpack -p",
     "start": "webpack-dev-server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha --reporter spec"
   },
   "author": "Mia Chen",
   "license": "ISC",
@@ -21,7 +21,12 @@
     "babel-core": "^6.17.0",
     "babel-loader": "^6.2.5",
     "babel-preset-react": "^6.16.0",
+    "chai": "^3.5.0",
+    "eslint": "^3.8.1",
+    "eslint-config-google": "^0.7.0",
+    "eslint-plugin-react": "^6.4.1",
     "html-webpack-plugin": "^2.22.0",
+    "mocha": "^3.1.2",
     "webpack-dev-server": "^1.16.2"
   }
 }

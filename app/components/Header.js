@@ -1,10 +1,5 @@
 var React = require("react");
-var ReactRouter = require("react-router");
-var Link = ReactRouter.Link;
 var Jumbotron = require('react-bootstrap/lib/Jumbotron');
-var Tabs = require('react-bootstrap/lib/Tabs');
-var Tab = require('react-bootstrap/lib/Tab');
-var TicTacToeContainer = require("../containers/TicTacToeContainer");
 
 /** Stateless functional react component
   * @param {object} props Properties

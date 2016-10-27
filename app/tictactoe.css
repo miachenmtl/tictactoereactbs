@@ -12,6 +12,19 @@
   margin: 0;
 }
 
+.centered {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.homePrompt {
+  text-align: center;
+}
+
+.statusArea {
+  margin-top: 25px;
+}
+
 .square {
   height: 150px;
   width: 150px;
@@ -48,4 +61,5 @@
   vertical-align: middle;
   padding: 0;
   margin: 0;
+  background-color: inherit;
 }

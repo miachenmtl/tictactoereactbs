@@ -1,12 +1,17 @@
 var React = require("react");
+var PropTypes = React.PropTypes;
 var TicTacToeGrid = require("../components/TicTacToeGrid");
 var getMoveLogic = require("../logicmodules/getMoveLogic");
+var helperLogic = require("../logicmodules/helperLogic");
 var StatusArea = require("../components/StatusArea");
 var Row = require('react-bootstrap/lib/Row');
 var Col = require('react-bootstrap/lib/Col');
 var Grid = require('react-bootstrap/lib/Grid');
 
 var TicTacToeContainer = React.createClass({
+  propTypes: {
+    game: PropTypes.number.isRequired
+  },
   getInitialState: function() {
     return {
       grid: {
@@ -16,7 +21,8 @@ var TicTacToeContainer = React.createClass({
       },
       turn: 1,
       winner: 0,
-      ai: [0, 0]
+      ai: [0, 0],
+      winSquares: []
     };
   },
   handleClick: function(grid, row, col, currentTurn) {
@@ -65,9 +71,11 @@ var TicTacToeContainer = React.createClass({
     }
   },
   handleWin: function(winCondition) {
+    var winningSquares = helperLogic.getWinningSquaresFromPosition(winCondition[2]);
     this.setState({
       turn: 0,
-      winner: winCondition[1]
+      winner: winCondition[1],
+      winSquares: winningSquares
     });
   },
   handleReset: function() {
@@ -78,7 +86,8 @@ var TicTacToeContainer = React.createClass({
         row3: [0, 0, 0]
       },
       turn: 1,
-      winner: 0
+      winner: 0,
+      winSquares: []
     });
   },
   handleChangePlayer: function(player) {
@@ -90,12 +99,18 @@ var TicTacToeContainer = React.createClass({
       ai: newAIStatus
     });
   },
+  handleNextMove: function() {
+    if (this.state.ai[this.state.turn - 1] > 0) {
+      this.handleClick(this.state.grid, 1, 1, this.state.turn);
+    }
+  },
   render: function() {
     return (
       <Grid>
         <Row className="show-grid">
-          <Col xs={6} xsOffset={3}>
-            <h4>To prompt AI to move, click Next Move button or any blank square.</h4>
+          <Col xs={12} sm={6} smOffset={3}>
+            <h4>If AI does not automatically move, click Next Move button or
+            any blank square to prompt next move.</h4>
           </Col>
         </Row>
         <Row className="show-grid">
@@ -104,14 +119,16 @@ var TicTacToeContainer = React.createClass({
               grid={this.state.grid}
               turn={this.state.turn}
               onUserClick={this.handleClick}
+              winSquares={this.state.winSquares}
             />
           </Col>
-          <Col xs={12} sm={4} >
+          <Col xs={6} xsOffset={3} sm={4} smOffset={0}>
             <StatusArea
               game={this.props.game}
               turn={this.state.turn}
               win={this.state.win}
               winner={this.state.winner}
+              onNextMove={this.handleNextMove}
               onReset={this.handleReset}
               onChangePlayer={this.handleChangePlayer}
               aiStatus={this.state.ai}

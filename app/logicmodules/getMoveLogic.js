@@ -18,12 +18,9 @@ exports.getNextMove = function(newGrid, rowName, colNum, currentTurn, aiStatus) 
 };
 
 function getAIMove(grid, turn, aiStatus) {
-  var i;
   var numLegalMoves;
   var legalMoves;
-  var nextMove;
   var nearWin;
-  var numOfNearWins;
   var forcedWin;
   var candidateMoves;
   legalMoves = helperLogic.getLegalMoves(grid);
@@ -34,18 +31,7 @@ function getAIMove(grid, turn, aiStatus) {
   } else if (aiStatus === 2) {
     nearWin = checkConditionLogic.checkNearWin(grid);
     if (nearWin[0]) {
-      numOfNearWins = nearWin.length / 3;
-      for (i = 0; i < numOfNearWins; i++) {
-        if (3 * i + 1 === turn) {
-          nextMove = helperLogic.findBlankSquareFromPosition(
-            grid,
-            nearWin[3 * i + 2]);
-          grid[nextMove[0]][nextMove[1]] = turn;
-          return grid;
-        }
-      }
-      nextMove = helperLogic.findBlankSquareFromPosition(grid, nearWin[2]);
-      grid[nextMove[0]][nextMove[1]] = turn;
+      grid = handleNearWin(grid, nearWin, turn);
       return grid;
     }
     if (numLegalMoves > 0) {
@@ -57,20 +43,7 @@ function getAIMove(grid, turn, aiStatus) {
     // First, check for near win
     nearWin = checkConditionLogic.checkNearWin(grid);
     if (nearWin[0]) {
-      numOfNearWins = nearWin.length / 3;
-      for (i = 0; i < numOfNearWins; i++) {
-        if (3 * i + 1 === turn) {
-          nextMove = helperLogic.findBlankSquareFromPosition(
-            grid,
-            nearWin[3 * i + 2]);
-          console.log("Player " + turn + " moved at " + nextMove);
-          grid[nextMove[0]][nextMove[1]] = turn;
-          return grid;
-        }
-      }
-      nextMove = helperLogic.findBlankSquareFromPosition(grid, nearWin[2]);
-      console.log("Player " + turn + " moved at " + nextMove);
-      grid[nextMove[0]][nextMove[1]] = turn;
+      grid = handleNearWin(grid, nearWin, turn);
       return grid;
     } else {
       // Second, check for immediate forced win
@@ -85,46 +58,35 @@ function getAIMove(grid, turn, aiStatus) {
           forcedWin.shift();
           candidateMoves = forcedWin;
         } else {
-          // Finally, eliminate losing moves
-          candidateMoves = eliminateLosingMoves(grid, turn);
+          // Finally, if no chance to win, eliminate losing moves
+          candidateMoves = helperLogic.eliminateLosingMoves(grid, turn);
         }
       }
       grid = getRandomMove(grid, candidateMoves, turn);
       return grid;
     }
   }
-};
+}
 
-function eliminateLosingMoves(grid, player) {
+function handleNearWin(grid, nearWin, turn) {
   var i;
-  var aiGrid;
-  var forcedWin;
-  var canGetForcedWin;
-  var result = [];
-  var opp = 2 - ((player + 1) % 2);
-  var legalMoves = helperLogic.getLegalMoves(grid);
-  var numLegalMoves = legalMoves.length;
-  var candidateMoveIndexArray = [];
-  for (i = 0; i < numLegalMoves; i++) {
-    aiGrid = JSON.parse(JSON.stringify(grid));
-    aiGrid[legalMoves[i][0]][legalMoves[i][1]] = player;
-    forcedWin = checkConditionLogic.checkForcedWin(aiGrid, opp);
-    canGetForcedWin = checkConditionLogic.checkCanGetForcedWin(aiGrid, opp);
-    if (forcedWin[0]) {
-      candidateMoveIndexArray[i] = false;
-    } else if (canGetForcedWin[0]) {
-      candidateMoveIndexArray[i] = false;
-    } else {
-      candidateMoveIndexArray[i] = true;
+  var nextMove;
+  var numOfNearWins = nearWin.length / 3;
+  for (i = 0; i < numOfNearWins; i++) {
+    if (3 * i + 1 === turn) {
+      nextMove = helperLogic.findBlankSquareFromPosition(
+        grid,
+        nearWin[3 * i + 2]);
+      console.log("Player " + turn + " moved at " + nextMove);
+      grid[nextMove[0]][nextMove[1]] = turn;
+      return grid;
     }
   }
-  for (i = 0; i < numLegalMoves; i++) {
-    if (candidateMoveIndexArray[i]) {
-      result.push(legalMoves[i]);
-    }
-  }
-  return result;
-};
+  nextMove = helperLogic.findBlankSquareFromPosition(grid, nearWin[2]);
+  console.log("Player " + turn + " moved at " + nextMove);
+  grid[nextMove[0]][nextMove[1]] = turn;
+  return grid;
+}
 
 function getRandomMove(grid, candidateMoves, turn) {
   var numCandidateMoves = candidateMoves.length;
@@ -133,4 +95,4 @@ function getRandomMove(grid, candidateMoves, turn) {
   console.log("Player " + turn + " moved at " + nextMove);
   grid[nextMove[0]][nextMove[1]] = turn;
   return grid;
-};
+}

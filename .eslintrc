@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "eslint-config-google",
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
+  "plugins": [
+    "react"
+  ],
+  "env": {
+    "browser": true,
+    "node": true,
+    "mocha": true
+  }
+}

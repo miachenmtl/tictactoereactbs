@@ -9,13 +9,11 @@ exports.checkWin = function(grid) {
   for (i = 1; i < 3; i++) {
     for (j = 0; j < 8; j++) {
       if (positionSummary[j][i] === 3) {
-        console.log("Win");
         return [1, i, j];
       }
     }
   }
   if (movesLeft === 0) {
-    console.log("Draw");
     return [-1, 0, 0];
   }
   return [0, 0, 0];

@@ -5,8 +5,6 @@ var Route = ReactRouter.Route;
 var hashHistory = ReactRouter.hashHistory;
 var Home = require("./components/Home");
 var GameContainer = require("./containers/GameContainer");
-var GameContainer2 = require("./containers/GameContainer2");
-
 
 var routes = (
   <Router history={hashHistory}>
